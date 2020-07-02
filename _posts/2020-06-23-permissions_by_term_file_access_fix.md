@@ -2,6 +2,7 @@
 layout: post
 title: Permissions By Entity & File Access Fix
 date: 2020-06-23
+updated: 2020-07-01
 ---
 
 Some of our digital repository content is not immediately (or ever will be) accessible to the public. The Drupal 8 module [permissions_by_term](https://www.drupal.org/project/permissions_by_term/) and the sub-module permissions_by_entity allows us to create a 'Staff-only' term that, when applied to nodes and media will restrict access to them (and files as an extension of media) to Special Collections staff members.
@@ -46,7 +47,7 @@ function islandora_local_node_update(NodeInterface $node) {
  * This is redundant for the node_update hook, so I should modify this
  * to only trigger on create.... someday.
  */
-function islandora_local_media_presave(Drupal\Core\Entity\EntityInterface $entity) {
+function islandora_local_media_presave(MediaInterface $entity) {
   if ($entity->hasField('field_media_of') && $entity->hasField('field_access_terms')) {
     // We do a foreach, but there is generally only one.
     // We could probably do a better merge of access terms, but this will do for now.
@@ -74,4 +75,106 @@ function islandora_local_install() {
 }
  ```
  
- Now everything should be in place. Now install your module (or run your update), clear your cache, and enjoy the benefits of making code update media permissions and moving files between filesystems.
+Now everything should be in place. Now install your module (or run your update), clear your cache, and enjoy the benefits of making code update media permissions and moving files between filesystems.
+ 
+## Addendum, 2020-07-01
+ 
+This strategy worked great in my testing environments. Unfortunately, it didn't scale well in my production site with more than 200k nodes and half as many media. 🤦‍♂️
+
+After enabling this code on a production site I attempted to update a node's access term and, after waiting 30 seconds, received a 500 error. PHP hit the max execution time. I did a little debugging and noticed that gathering the media didn't cause an issue, but saving the media did. Removing the media presave hook code didn't help either. Simply triggering the media save was enough to overwhelm it.
+
+My first attempt to fix it wrapped the media updates in Batch API operations, but that *still* wasn't enough to fix it. Further testing revealed media saves were taking about three minutes and *file_access_fix* was the cause. Uninstalling the module dropped the *three-minute* media save time down to about *one second*.
+
+But I still want that magical "put the file where it makes the most sense" automation!
+
+I didn't know exactly what in file_access_fix was causing the slow-down, so I decided to take the heart of the module and re-implement it locally:
+
+```php
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\file\Plugin\Field\FieldType\FileFieldItemList;
+
+/**
+ * Make a media's files private/public if necessary.
+ */
+function update_file_schema(EntityInterface $entity) {
+  if (!$entity->hasField('field_media_of') || !$entity->hasField('field_access_terms')) {
+    return;
+  }
+
+  // Check for access by Anonymous User (uid 0).
+  $accessChecker = \Drupal::service('permissions_by_entity.access_checker');
+  $accessible = $accessChecker->isAccessAllowed($entity, 0);
+
+  // Load the necessary services.
+  $fileSystemService = \Drupal::service('file_system');
+  $stream_wrapper_manager = \Drupal::service('stream_wrapper_manager');
+
+  foreach ($entity->getFields(FALSE) as $field) {
+    if ($field instanceof FileFieldItemList) {
+      foreach ($field->referencedEntities() as $file) {
+        // Skip files outside public and private.
+        $uriScheme = $stream_wrapper_manager->getScheme($file->getFileUri());
+        if (($uriScheme !== 'public') && ($uriScheme !== 'private')) {
+          continue;
+        }
+        $fileIsPublic = $uriScheme === 'public';
+        // It should not be both public AND restricted.
+        if ($fileIsPublic !== $accessible) {
+          // Move it.
+          $newUriPath = $stream_wrapper_manager->getTarget($file->getFileUri());
+          $newUriScheme = $accessible ? 'public' : 'private';
+          $fileTargetUri = "$newUriScheme://$newUriPath";
+          $target_dir = dirname($fileTargetUri);
+          $fileSystemService->prepareDirectory($target_dir, FileSystemInterface::CREATE_DIRECTORY);
+          $movedFile = file_move($file, $fileTargetUri, FileSystemInterface::EXISTS_RENAME);
+          if (!$movedFile) {
+            \Drupal::logger('islandora_local')->warning("Failed to move file: '@uri'", ['@uri' => $file->getFileUri()]);
+          }
+          else {
+            \Drupal::logger('islandora_local')->notice("Moved file '@uri' to '@new_uri' for Media '@label'", [
+              '@uri' => $file->getFileUri(),
+              '@new_uri' => $fileTargetUri,
+              '@label' => $entity->label(),
+            ]);
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_media_update().
+ */
+function islandora_local_media_update(EntityInterface $media) {
+  update_file_schema($media);
+}
+
+/**
+ * Implements hook_media_insert().
+ */
+function islandora_local_media_insert(EntityInterface $media) {
+  update_file_schema($media);
+}
+```
+
+This method still relies on the permissions_by_term patch I mentioned above, but it works as well as the file_access_fix module did. I *really* wish I knew why file_access_fix was slowing down my media saves. It obviously wasn't the parts I included in this re-implementation, but I can't reproduce it on dev and I would rather not shut-down production to hunt for 🐛s.
+
+*Side note:* Remember the redundancy we experienced earlier with media copying over field_access_terms from the node twice? We can prevent that redundancy by updating the presave hook to check if the media is new or not:
+
+```php
+/**
+ * Implements hook_media_presave.
+ */
+function islandora_media_presave(MediaInterface $entity) {
+  if ($entity->isNew() && $entity->hasField('field_media_of') && $entity->hasField('field_access_terms')) {
+    // We do a foreach, but there is generally only one.
+    // We could probably do a better merge of access terms, but this will do for now.
+    foreach ($entity->field_media_of as $media_of) {
+      if ($media_of->entity->hasField('field_access_terms')) {
+        $entity->field_access_terms = $media_of->field_access_terms;
+      }
+    }
+  }
+}
+```
