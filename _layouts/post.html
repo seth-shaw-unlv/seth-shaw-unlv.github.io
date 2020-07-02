@@ -8,7 +8,7 @@ layout: default
   <div class="date">
     Written on {{ page.date | date: "%Y-%m-%d" }}
     {% if page.updated %}
-      (Updated: page.updated | date: "%Y-%m-%d")
+      (Updated: {{ page.updated | date: "%Y-%m-%d" }})
     {% endif %}
   </div>
 
