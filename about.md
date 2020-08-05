@@ -17,10 +17,12 @@ Feel free to [email me](mailto:seth.shaw@unlv.edu), but I'm also frequently avai
 ### Presentations
 
 <ul>
+  <li>Darnelle O. Melvin and Seth Shaw. "CONTENTdm to Islandora 8: Remediation & Migration." Islandora Online, 2020-08-04. (<a href="https://osf.io/4te68/">slides</a>)</li>
   <li>"Integrating ArchivesSpace with Drupal and Islandora at University of Nevada, Las Vegas Libraries." Webinar presented for the ArchivesSpace Integrations Series, 2020-07-17. (<a href="https://archivesspace.org/archives/6398">announcement with links) (<a href="https://youtu.be/qic3SvcbAuc">YouTube</a>)</li>
   <li>John Kunze, Seth Shaw, and Christine Di Bella. "Integrating ArchivesSpace and ARKs." Webinar presented for the ArchivesSpace Integrations Series, 2020-03-04. (<a href="https://archivesspace.org/archives/5930">announcement with links) (<a href="https://youtu.be/Rt_tZHb1kiA?t=831">YouTube</a>)</li>
   <li>"Islandora 8 at the University of Nevada Las Vegas." Webinar for the Islandora Foundation, 2020-01-21. (<a href="https://youtu.be/_8egyF-0rjk">YouTube</a>)</li>
-  <!-- Add IslandoraCon Slides. -->
+  <li>"Drupal 8 Migrate API Bulk-Loading Content into Islandora 8." IslandoraCon, 2019-10-09. (<a href="files/2019-10-09_IslandoraCon_migrate-api.pdf">slides</a>)</li>
+  <li>"Sailing the Islandora 8 Ship while (still) Building It." IslandoraCon, 2019-10-09. (<a href="files/2019-10-09_IslandoraCon_sailing-the-islandora-8-ship.pdf">slides</a>)</li>
   <li>"Bringing Archival Description and Digital Objects Together with Drupal." DLF. Las Vegas, NV. 2018-10-05. (<a href="https://osf.io/8suze/">presentation page</a>)</li>
   <li>"Linked Data without (necessarily) a Triplestore." Society of American Archivists Annual Meeting. Washington, D.C. 2018-08-16. (<a href="https://static.sched.com/hosted_files/archives2018/92/session303-Shaw.pdf">slides</a>)</li>
   <li>"ArchivesSpace/Drupal 8 Integration Project: Using Drupal for the PUI." ArchivesSpace Member Forum. Washington, D.C. 2018-08-14. (<a href="https://archivesspace.atlassian.net/wiki/spaces/ADC/pages/634650626/ArchivesSpace+Member+Forum+2018">event page with links</a>)</li>
