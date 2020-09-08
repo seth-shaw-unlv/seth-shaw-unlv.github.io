@@ -16,11 +16,11 @@ I began to search the web for answers. One post I found indicated you could [cha
 
 Something else was going on so I continued my hunt. I finally stumbled upon the root of the problem, `loadTree()`. This function loads the *entire* vocabulary into memory and, because it is called by the term list admin form (`\Drupal\taxonomy\Form\OverviewTerms::buildForm()`), it can WSOD your page even if try to limit the page to a single term. 😱
 
-There are work-arounds, but this is a pretty ugly hole that Drupal has simply laid a rug over and unwitting site developers and administrators keep falling into.
+There are workarounds, but this is a pretty ugly hole that Drupal has simply laid a rug over and unwitting site developers and administrators keep falling into.
 
-The first work-around is the classic OOME brute-force fix: increase your PHP's max memory. PHP's max memory limit serves as a not-so-subtle that developers have written inefficient code. If you have to keep increasing this limit you are likely doing something *wrong* although there are exceptions. Most of the time my site's are quite happy living within the 256MB limit and many sites run on much less. Unfortunately, `loadTree()` will quickly consume all that memory and still complain. Giving it more memory can work, to a point. [Eventually memory won't be enough](https://www.drupal.org/project/drupal/issues/763380#comment-12613278); the time it takes to load all that memory will eventually lead to time-out issues. This is simply a losing battle as the vocabulary gets larger.
+The first workaround is the classic OOME brute-force fix: increase your PHP's max memory. PHP's max memory limit serves as a not-so-subtle that developers have written inefficient code. If you have to keep increasing this limit you are likely doing something *wrong* although there are exceptions. Most of the time my site is quite happy living within the 256MB limit and many sites run on much less. Unfortunately, `loadTree()` will still consume all that memory and complain. Giving it more memory can work, to a point. Eventually, [memory won't be enough](https://www.drupal.org/project/drupal/issues/763380#comment-12613278); the time it takes to load all that memory will eventually lead to time-out issues. This is a losing battle as the vocabulary gets larger.
 
-The next work-around is to turn off this feature altogether by setting `taxonomy.settings:override_selector` to `false` and using a view that doesn't use `loadTree()` at all but displays a flat list without hierarchy. This setting is here because [Drupal *knows* they have a scalability problem](https://api.drupal.org/api/drupal/core%21modules%21taxonomy%21src%21TermForm.php/function/TermForm%3A%3Aform/8.9.x):
+The next workaround is to turn off this feature altogether by setting `taxonomy.settings:override_selector` to `false` and using a view that doesn't use `loadTree()` at all but displays a flat list without hierarchy. This setting is here because [Drupal *knows* they have a scalability problem](https://api.drupal.org/api/drupal/core%21modules%21taxonomy%21src%21TermForm.php/function/TermForm%3A%3Aform/8.9.x):
 
 > \Drupal\taxonomy\TermStorageInterface::loadTree() and
 > \Drupal\taxonomy\TermStorageInterface::loadParents() may contain large
@@ -32,9 +32,9 @@ Really, Drupal? Kicking performance issues on a core feature like taxonomy to co
 
 In any case, yes, you can turn off this setting and create a term form (with pagination!) that also includes an edit button. I've included one [below](#appendix-manage-taxonomy-terms-view) based on an Islandora 8.x-1.1.0.
 
-Fortunately, there is a better solution that preserves the existing interface! 🎉 Unfortunately it is only available as a patch. ☹️
+Fortunately, there is a better solution that preserves the existing interface! 🎉 Unfortunately, it is only available as a patch. ☹️
 
-In the aptly named ticket "Do not use \\Drupal\\taxonomy\\TermStorageInterface::loadTree() in \\Drupal\\taxonomy\\Form\\OverviewTerms::buildForm()", [legolasbo](https://www.drupal.org/u/legolasbo) submitted [a patch in May 2018](https://www.drupal.org/project/drupal/issues/763380#comment-12614808) which was picked up by others but then never merged. There have been a number of re-rolls since and [the July 8th, 2019 patch](https://www.drupal.org/project/drupal/issues/763380#comment-13173830) works perfectly with Drupal 8.9.5.
+In the aptly named ticket "Do not use \\Drupal\\taxonomy\\TermStorageInterface::loadTree() in \\Drupal\\taxonomy\\Form\\OverviewTerms::buildForm()", [legolasbo](https://www.drupal.org/u/legolasbo) submitted [a patch in May 2018](https://www.drupal.org/project/drupal/issues/763380#comment-12614808) which was picked up by others but then never merged. There have been a few re-rolls since and [the July 8th, 2019 patch](https://www.drupal.org/project/drupal/issues/763380#comment-13173830) works perfectly with Drupal 8.9.5.
 
 Applying patches is relatively easy using composer.
 
@@ -50,7 +50,7 @@ Update your `composer.json` to include the following in your 'extra' section:
 
 Then run composer update and clear cache.
 
-I tested this with the Islandora 8.x-1.1.0 release. After the initial provision I updated all my module with composer update and then generated 10k terms in the subject vocabulary. Trying to view that vocabulary resulted in a WSOD (as we would now expect). Applying the patch allowed the subjects vocabulary page to render as it should! 
+I tested this with the Islandora 8.x-1.1.0 release. After the initial provision, I updated all my module with composer update and then generated 10k terms in the subject vocabulary. Trying to view that vocabulary resulted in a WSOD (as we would now expect). Applying the patch allowed the subjects vocabulary page to render as it should! 
 
 The trouble with patches is they keep needing re-rolls as core is updated. The sooner we can get this patch in core the better, as far as I'm concerned.
 
