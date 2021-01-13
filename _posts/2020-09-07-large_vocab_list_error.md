@@ -8,13 +8,13 @@ Taxonomy term management in Drupal 8 has an Achilles heel: `\Drupal\taxonomy\Ter
 Taxonomies that grow too large can WSOD a site with a fatal Out of Memory Error (OOME) when this method is called.
 
 I first ran into it when I attempted to 'List Terms' for a taxonomy with only 12k terms in it although my other vocabularies worked fine. 
-I didn't realize at the time it was due to size and I later one post indicating it can happen 
-with [as few as 6k terms in the vocabulary](https://www.drupal.org/project/drupal/issues/3101420)! The logs indicated it was an OOME but repeated instances gave different sources for the error; all red herrings.
+I didn't realize at the time it was due to size. My logs indicated it was an OOME but repeated instances gave different sources for the error; but they were all red herrings.
 
 I began to search the web for answers. One post I found indicated you could [change the number of terms listed at a time](https://www.drupal.org/forum/support/post-installation/2012-11-08/change-the-pagination-of-the-drupal-admin-taxonomy-term#comment-13737248). Surely that would fix the error; right? Unfortunately, no.
 `drush config:set taxonomy.settings terms_per_page_admin 25` didn't help although I verified the command *did* change the number of terms displayed per page for other vocabularies. Dropping it down to five terms per page didn't help either! 
 
-Something else was going on so I continued my hunt. I finally stumbled upon the root of the problem, `loadTree()`. This function loads the *entire* vocabulary into memory and, because it is called by the term list admin form (`\Drupal\taxonomy\Form\OverviewTerms::buildForm()`), it can WSOD your page even if try to limit the page to a single term. 😱
+Something else was going on so I continued my hunt. I finally stumbled upon the root of the problem, `loadTree()`. This function loads the *entire* vocabulary into memory and, because it is called by the term list admin form (`\Drupal\taxonomy\Form\OverviewTerms::buildForm()`), it can WSOD your page even if try to limit the page to a single term. I found one issue ticket indicating it can happen 
+with [as few as 6k terms in the vocabulary](https://www.drupal.org/project/drupal/issues/3101420)! 😱
 
 There are workarounds, but this is a pretty ugly hole that Drupal has simply laid a rug over and unwitting site developers and administrators keep falling into.
 
