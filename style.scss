@@ -269,6 +269,16 @@ nav {
     text-transform: uppercase;
     font-size: 15px;
   }
+  
+  figure {
+    margin: 1.8em .8em;
+    border: 1px solid $gray;
+    padding: 0.5em;
+  }
+  
+  figcaption {
+    font-style: italic;
+  }
 }
 
 .wrapper-footer {
