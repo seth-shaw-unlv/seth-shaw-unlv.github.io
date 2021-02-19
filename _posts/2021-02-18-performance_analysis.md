@@ -4,8 +4,6 @@ title: Islandora Performance Analysis
 date: 2021-02-18
 ---
 
-# Background
-
 Currently, the our new Islandora-based digital asset management system (yet to be released) is returning pages from a cold cache (meaning Drupal hasn't pre-computed parts of the page) at an unacceptably slow rate. Some slowness is acceptable from a cold cache as most pages will be cached and return quickly (within a fraction of a second). However, our site contains a long tail of content and we can't anticipate what users will search for. These pages do not have the benefit of page caching and so need a passable loading speed without it.
 
 While we have not determined specific performance goals for the site yet, these statements from "High Performance Drupal" seem appropriate with a minor edit for the types of pages of interest: “The maximum page load time across the entire site should always remain below eight seconds. [Digital Object and search] pages should have a maximum page load time of five seconds. The front page of the site should have a maximum page load time of three seconds.”[^high-performance-drupal]
