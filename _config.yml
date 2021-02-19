@@ -68,6 +68,9 @@ kramdown:
     # Use existing pygments syntax highlighting css
     css_class: 'highlight'
 
+# Enable future when testing posts locally
+# future: true
+
 # Set the Sass partials directory, as we're using @imports
 sass:
   style: :expanded # You might prefer to minify using :compressed
@@ -85,5 +88,6 @@ exclude:
   - README.md
   - CNAME
   - vendor
+  - ideas.md
 
 theme: jekyll-theme-minimal
