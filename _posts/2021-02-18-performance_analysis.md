@@ -146,7 +146,7 @@ There are a number of webpages that provide suggestions for improving Drupal per
      ``curl -o /dev/null -sS -w "$theme\t$URL\t$run\t%{time_starttransfer}\n" $URL``
 
 [^test-sets]:
-     For the curious, I'm posting [the test scripts and the collected test data in a zip file](/files/files/2021-01_performance_analysis_tests.zip).
+     For the curious, I'm posting [the test scripts and the collected test data in a zip file](/files/2021-01_performance_analysis_tests.zip).
 
 [^2]:
      The indexer was stopped early for the full archival descriptions load. The current performance issues cause the indexer to run ~6 times slower than it usually would and would have taken a full week to complete. Reviewing the SOLR logs indicated that, at the DAMS current content load, SOLR was returning most results in under 100 milliseconds which barely impacts the overall TTFB. Given the relatively long time required for a full index and it's relative un-importance to overall TTFB, I decided to expedite the testing process by stopping the indexer at ~61%, which was sufficient to contain all taxonomy terms, digital collections objects, archival description, and a significant portion or archival component objects. See the SOLR Performance section in "Additional Notes."

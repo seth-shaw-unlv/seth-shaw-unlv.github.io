@@ -110,6 +110,17 @@ img {
   max-width: 100%;
 }
 
+// Prevents theme from breaking superscript and subscript formatting.
+sup {
+  vertical-align: super;
+  font-size: small;
+}
+
+sub {
+    vertical-align: sub;
+    font-size: smaller;
+}
+
 // Fixes images in popup boxes from Google Translate
 .gmnoprint img {
   max-width: none;
