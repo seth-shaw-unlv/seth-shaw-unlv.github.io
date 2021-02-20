@@ -75,13 +75,13 @@ First I first ensured the enabled blocks were consistent across the themes I'm t
 Testing results revealed that, while the theme does have an impact on the TTFB, the degree of difference is not nearly as significant, 5.3% at full load, as other factors appear to be.[^3] Figures 1 and 2 illustrate that the themes, while slowly diverging as load increases, still trend together.
 
 <figure class="chart">
-  <img src="/images/2021/performance_fig_1.png" alt="1－Average TTFB for a digital object page at increasing load levels.">
-  <figcaption>Fig. 1－Average TTFB for a digital object page at increasing load levels. Each color is a separate theme.</figcaption>
+  <img src="/images/2021/performance_fig_1.svg" alt="1－Average TTFB for a digital object page for each theme at increasing load levels.">
+  <figcaption>Fig. 1－Average TTFB for a digital object page for each theme at increasing load levels. Note that bartik is obscured by drupal8_parallax_theme because they are so close.</figcaption>
 </figure>
 
 <figure class="chart">
-  <img src="/images/2021/performance_fig_2.png" alt="Average TTFB for a search page at increasing load levels.">
-  <figcaption>Fig. 2－Average TTFB for a search page at increasing load levels. Each color is a separate theme.</figcaption>
+  <img src="/images/2021/performance_fig_2.svg" alt="Average TTFB for a search page at increasing load levels.">
+  <figcaption>Fig. 2－Average TTFB for a search page at increasing load levels. Each color is a separate theme. Note that carapace is obscured by drupal8_parallax_theme because they are so close.</figcaption>
 </figure>
 
 It appears evident that some other factor is responsible for the drastically increasing load times.
@@ -91,8 +91,8 @@ It appears evident that some other factor is responsible for the drastically inc
 To better understand these large load times I used the XHProf profiling tool to see which portions of the code have the greatest durations. Although various pieces of code are reused by other portions of the system, it was clear that the permissions system was consuming most of the processing time with several expensive database calls. Comparing times with Permissions by Term (and the associated sub-module, Permissions by Entity) enabled and without is quite telling:
 
 <figure class="chart">
-  <img src="/images/2021/performance_fig_3.png" alt="Shows the average time to first byte for the different types of pages (search, simple objects, and complex objects), using the Special theme, with and without Permissions by Term (PBT) enabled.">
-  <figcaption>Fig. 3－Shows the average time to first byte for the different types of pages (search, simple objects, and complex objects), using the Special theme, with and without Permissions by Term (PBT) enabled.  Note that the line for simple objects without permissions is so in line with complex objects, that it is completely obscured.</figcaption>
+  <img src="/images/2021/performance_fig_3.svg" alt="Shows the average time to first byte for the different types of pages (search, simple objects, and complex objects), using the Special theme, with and without Permissions by Term (PBT) enabled as load increases.">
+  <figcaption>Fig. 3－Shows the average time to first byte for the different types of pages (search, simple objects, and complex objects), using the Special theme, with and without Permissions by Term (PBT) enabled as load increases.  Note that the without permissions is obscured behind complex objects because they are so close.</figcaption>
 </figure>
 
 As illustrated in figure 3, the time to first byte increases while using Permissions by Term corresponding to the increase in load, whereas the trend line for the pages without a permissions module remains relatively flat.
