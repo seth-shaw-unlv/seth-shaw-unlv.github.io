@@ -2,6 +2,7 @@
 layout: post
 title: Content Access Control Solutions Investigation
 date: 2021-02-19
+updated: 2021-02-23
 ---
 
 My [recent investigation into abysmal digital asset management site performance]({% link _posts/2021-02-18-performance_analysis.md %}) under load identified [Permissions by Term module (permissions_by_term)](https://www.drupal.org/project/permissions_by_term) as the primary culprit. Some preliminary exploration found at least one optimization that _improved_ performance, but not sufficiently. [Others have also noted performance issues](https://www.drupal.org/project/permissions_by_term/issues/3126542) and made some suggestions, although the suggestions appear abandoned. I could spend time developing more optimizations but, given that [a patch I submitted in June 2020](https://www.drupal.org/project/permissions_by_term/issues/3143967) was never reviewed, I have little hope that my patches would be merged.
@@ -98,6 +99,8 @@ The complications with this module are that it requires significant refactoring 
 To be short, both of the prime candidates have their issues and require further development time and testing before receiving a stamp of approval. The question is _which_: adva+rac, having a more questionable community but seemingly smaller technical lift, or embargoes, with a stronger likelihood of community support but a heftier technical lift that is further outside The Drupal Way?
 
 Ideally, we would do both to better compare their performance at scale, but this issue is blocking progress on the other pre-launch tasks, so we can only afford to invest in one right now. I am inclined to attempt fixing Advanced Access which, if it works, would move the launch forward more quickly. Adopting embargoes won't be any more difficult to implement if we choose to pursue it later.[^embargoes-timeline]
+
+_Update (2021-02-23): During the [Islandora Open Meeting on February 23rd, 2021](https://docs.google.com/document/d/1nZc9oMjFa1aklM9FdizvM-Trtp4jFp1WCPSJR-oL-RE/) we learned that ASU has been using Group for [collection membership](https://gist.github.com/elizoller/9d0135c4c122cbec20c72e68a95ac8d8). This isn't the same use-case we are looking at but it appears more reasonable than it initially seemed. They also admit that the module's documentation is lacking and it took a lot of code-reading to understand. So, there may actually be some magical setup where it would work for us, but it would take significant effort. If Advanced Access doesn't pan out we can investigate Group along-side Embargo._
 
 # Additional Resources
 
