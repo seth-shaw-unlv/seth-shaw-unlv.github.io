@@ -16,6 +16,7 @@ Feel free to [email me](mailto:seth.shaw@unlv.edu), but I'm also frequently avai
 
 ### Presentations
 
+- "Performance Testing & Content Access Control." Presentation during an [Islandora Open Meeting, 2021-02-23](https://docs.google.com/document/d/1nZc9oMjFa1aklM9FdizvM-Trtp4jFp1WCPSJR-oL-RE/). ([slides](/files/2021-02-23_Islandora_Open_Meeting_Performance_Testing_and_Content_Access_Control.pdf)) ([YouTube](https://youtu.be/tKQIdYjsVDo))
 - Darnelle O. Melvin and Seth Shaw. "CONTENTdm to Islandora 8: Remediation & Migration." Islandora Online, 2020-08-04. ([slides](https://osf.io/4te68/)) ([YouTube](https://youtu.be/rON8-Dq_lY8); ~23 min.)
 - "Integrating ArchivesSpace with Drupal and Islandora at University of Nevada, Las Vegas Libraries." Webinar presented for the ArchivesSpace Integrations Series, 2020-07-17. ([announcement with links](https://archivesspace.org/archives/6398)) ([YouTube](https://youtu.be/qic3SvcbAuc); ~58 min.)
 - John Kunze, Seth Shaw, and Christine Di Bella. "Integrating ArchivesSpace and ARKs." Webinar presented for the ArchivesSpace Integrations Series, 2020-03-04. ([announcement with links](https://archivesspace.org/archives/5930)) ([YouTube](https://youtu.be/Rt_tZHb1kiA?t=831))

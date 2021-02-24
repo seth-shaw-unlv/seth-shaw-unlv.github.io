@@ -2,6 +2,7 @@
 layout: post
 title: Islandora Performance Analysis
 date: 2021-02-18
+updated: 2021-02-24
 ---
 
 Currently, the our new Islandora-based digital asset management system (yet to be released) is returning pages from a cold cache (meaning Drupal hasn't pre-computed parts of the page) at an unacceptably slow rate. Some slowness is acceptable from a cold cache as most pages will be cached and return quickly (within a fraction of a second). However, our site contains a long tail of content and we can't anticipate what users will search for. These pages do not have the benefit of page caching and so need a passable loading speed without it.
@@ -104,6 +105,8 @@ This result alone is enough for us to shift from performance testing to an inves
 # Summary
 
 There are few things on the internet as a slowly loading page. This process illustrates how our first assumptions are not always accurate. I could have spent a lot of time chasing minor gains by tweaking my theme without addressing the real issue. Setting up a testing environment and putting various aspects through their paces is worth the work. Addressing the performance issues with our content permissions is my next step, but there are plenty of other things we can try to further improve performance. I'll be sure to put them through their paces.
+
+_Update (2020-02-24): I presented on this and the follow-up content access controls at the Islandora Online Meeting on 2021-02-23. [The slides are available as PDF](/files/2021-02-23_Islandora_Open_Meeting_Performance_Testing_and_Content_Access_Control.pdf) and [a recording of the presentation](https://youtu.be/tKQIdYjsVDo) is available on the Islandora Foundation YouTube site._
 
 # Additional Notes
 
